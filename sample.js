@@ -1,44 +1,46 @@
 
-(function(){
+(function(exports){
 	window.addEventListener('DOMContentLoaded', function(event){
-		var el = document.getElementById('touch-area');
 		logger.init();
+		var el = document.getElementById('touch-area');
 
 		// タッチ開始リスナーの登録
 		el.addEventListener("touchstart", function(event) {
 			stopEvent(event);
-			var len = event.changedTouches.length;	
-			logger.log("touchstart: touch length = " + len);
+			logger.log("touchstart:");
 			printTouches(event.changedTouches);
 		}, false);
 
 		// タッチ移動リスナーの登録
 		el.addEventListener("touchmove", function(event) {
 			stopEvent(event);
-			var len = event.changedTouches.length;	
-			logger.log("touchmove: touch length = " + len);
+			logger.log("touchmove:");
 			printTouches(event.changedTouches);
 		}, false);
 
 		// タッチ終了リスナーの登録
 		el.addEventListener("touchend", function(event) {
 			stopEvent(event);
-			var len = event.changedTouches.length;	
-			logger.log("touchend: touch length = " + len);
+			logger.log("touchend:");
 			printTouches(event.changedTouches);
 		}, false);
 	});
 
+	// イベントの停止
+	var stopEvent = function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+	};
+
 	// タッチリストを表示する関数
 	var printTouches = function(touchList) {
-		var i;
-		var len = touchList.length;	
-		for (i=0; i<len; i++) {
+		var i=0, len = touchList.length;
+		for (; i<len; i++) {
 			var touch = touchList.item(i);
-			logger.log("- touch["+i+"]: " + touch.identifier + ", (" + 
+			logger.log("- " + touch.identifier + ": (" + 
+				touch.screenX + ", " + touch.screenY + "), (" +
 				touch.pageX + ", " + touch.pageY + "), (" + 
-				touch.clientX + ", " + touch.clientY + "), (" +
-				touch.screenX + ", " + touch.screenY + ")");
+				touch.clientX + ", " + touch.clientY + ")");
 		}
 	}
 
@@ -59,11 +61,6 @@
 			this.loggerWrapper.scrollTop = this.loggerEl.clientHeight;
 		}
 	};
-	window.logger = logger;
+	exports.logger = logger;
 
-	var stopEvent = function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-	};
-
-})();
+})(window);
