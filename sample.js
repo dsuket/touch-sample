@@ -1,17 +1,14 @@
 
 (function(){
-	var loggerEl, loggerWrapper;
-
 	window.addEventListener('DOMContentLoaded', function(event){
 		var el = document.getElementById('touch-area');
-		loggerEl = document.getElementById('logger');
-		loggerWrapper = document.getElementById('logger-wrapper');
+		logger.init();
 
 		// タッチ開始リスナーの登録
 		el.addEventListener("touchstart", function(event) {
 			stopEvent(event);
 			var len = event.changedTouches.length;	
-			log("touchstart: touch length = " + len);
+			logger.log("touchstart: touch length = " + len);
 			printTouches(event.changedTouches);
 		}, false);
 
@@ -19,7 +16,7 @@
 		el.addEventListener("touchmove", function(event) {
 			stopEvent(event);
 			var len = event.changedTouches.length;	
-			log("touchmove: touch length = " + len);
+			logger.log("touchmove: touch length = " + len);
 			printTouches(event.changedTouches);
 		}, false);
 
@@ -27,7 +24,7 @@
 		el.addEventListener("touchend", function(event) {
 			stopEvent(event);
 			var len = event.changedTouches.length;	
-			log("touchend: touch length = " + len);
+			logger.log("touchend: touch length = " + len);
 			printTouches(event.changedTouches);
 		}, false);
 	});
@@ -38,22 +35,35 @@
 		var len = touchList.length;	
 		for (i=0; i<len; i++) {
 			var touch = touchList.item(i);
-			log(" touch["+i+"] id:" + touch.identifier + ", (" + 
-				touch.clientX + ", " + touch.clientY + ")");
+			logger.log("- touch["+i+"]: " + touch.identifier + ", (" + 
+				touch.pageX + ", " + touch.pageY + "), (" + 
+				touch.clientX + ", " + touch.clientY + "), (" +
+				touch.screenX + ", " + touch.screenY + ")");
 		}
 	}
 
 	// ログ
-	var log = function(msg){
-		var line = document.createElement('p');
-		line.innerText = msg;
-		loggerEl.appendChild(line);
-		loggerWrapper.scrollTop = loggerEl.clientHeight;
-		
+	var logger = {
+		loggerEl: null,
+		loggerWrapper: null,
+
+		init: function() {
+			this.loggerEl = document.getElementById('logger');
+			this.loggerWrapper = document.getElementById('logger-wrapper');
+		},
+
+		log: function(msg) {
+			var line = document.createElement('p');
+			line.innerText = msg;
+			this.loggerEl.appendChild(line);
+			this.loggerWrapper.scrollTop = this.loggerEl.clientHeight;
+		}
 	};
+	window.logger = logger;
 
 	var stopEvent = function(event) {
 		event.preventDefault();
 		event.stopPropagation();
-	}
+	};
+
 })();
